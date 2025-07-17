@@ -1,23 +1,23 @@
 import os
 
 def get_files_info(working_directory, directory="."):
-    full_path = os.path.join(working_directory, directory)
+    target_path = os.path.join(working_directory, directory)
 
     abs_working_dir = os.path.abspath(working_directory)
-    abs_full_path = os.path.abspath(full_path)
+    abs_full_path = os.path.abspath(target_path)
 
     if not abs_full_path.startswith(abs_working_dir):
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
     
-    if not os.path.isdir(full_path):
-        return f'Error: "{directory} is not a directory' 
+    if not os.path.isdir(target_path):
+        return f'Error: "{directory}" is not a directory' 
     
     try:
-        files = os.listdir(full_path)
+        files = os.listdir(target_path)
         output_lines = []
 
         for file in files:
-            file_path = os.path.join(full_path, file)
+            file_path = os.path.join(target_path, file)
 
             try:
         
