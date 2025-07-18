@@ -16,9 +16,6 @@ def get_file_content(working_directory, file_path):
         with open(target_path, "r") as f:
             true_size = os.path.getsize(target_path)
             file_content = f.read(MAX_CHAR)
-            
-            print(f"DEBUG: MAX_CHAR is {MAX_CHAR} inside get_file_content")
-
 
             if true_size > MAX_CHAR:
                 file_content += f'...File "{file_path}" truncated at {MAX_CHAR} characters'
