@@ -5,7 +5,8 @@ from google import genai
 from google.genai import types
 
 from prompts import system_prompt
-from tools.call_function import available_functions
+from functions.functions_list import available_functions
+from call_function import call_function
 
 def parse_args():
     args = sys.argv[1:]
@@ -43,15 +44,24 @@ def main():
             )
         )
     
-    if verbose:
+    if verbose and response.usage_metadata is not None:
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     
     if not response.function_calls:
-        return response.text
+        print(response.text)
+        return 
 
-    for function_call_part in response.function_calls:
-        print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+    if response.function_calls:
+        for function_call_part in response.function_calls:
+            call_result = call_function(function_call_part, verbose=verbose)
+
+            if  hasattr(call_result.parts[0], "function_response") and hasattr(call_result.parts[0].function_response, "response"):
+                if verbose:
+                    print(f"-> {call_result.parts[0].function_response.response}")
+            else:
+                raise Exception("No function response found in the call result")
+
 
 if __name__ == "__main__":
     main()
